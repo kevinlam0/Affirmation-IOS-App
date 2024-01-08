@@ -52,7 +52,15 @@ struct ContentView: View {
                 Spacer()
                 Text(affirmation)
                     .onAppear {
-                        affirmation = getAffirmationMessage()
+                        Task {
+                            let (data, _) = try await
+                                URLSession.shared.data(from:
+                                            URL(string: "https://www.affirmations.dev/")!)
+                            let decodedResponse = try?
+                                JSONDecoder().decode(Affirmation.self, from: data)
+                            
+                            affirmation = (decodedResponse?.affirmation as? String) ?? ""
+                        }
                     }
                     .font(.largeTitle)
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -63,7 +71,15 @@ struct ContentView: View {
                 HStack {
                     Button {
                         // Make a call to our affirmation API
-                        affirmation = getAffirmationMessage()
+                        Task {
+                            let (data, _) = try await
+                                URLSession.shared.data(from:
+                                            URL(string: "https://www.affirmations.dev/")!)
+                            let decodedResponse = try?
+                                JSONDecoder().decode(Affirmation.self, from: data)
+                            
+                            affirmation = (decodedResponse?.affirmation as? String) ?? ""
+                        }
                     } label: {
                         Image(systemName: "arrow.clockwise")
                             .frame(width: 50, height: 50)
@@ -76,7 +92,7 @@ struct ContentView: View {
                     Button {
                         print("Button")
                     } label: {
-                        Image(systemName: "heart.fill")
+                        Image(systemName: "heart")
                             .frame(width: 50, height: 50)
                             .background(Color(red: 196/255, green: 197/255, blue: 202/255))
                             .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
